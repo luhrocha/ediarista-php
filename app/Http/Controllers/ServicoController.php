@@ -3,11 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Servico;
+use App\Http\Requests\ServicoRequest;
 use Illuminate\Http\Request;
 
 class ServicoController extends Controller
 {
-    //
+    /**
+     * Lista os serviços
+     *  
+     */
     public function index(Type $var = null)
     {
         $servicos = Servico::simplePaginate(10);
@@ -15,22 +19,31 @@ class ServicoController extends Controller
         return view('servicos.index')->with('servicos', $servicos);
     }
 
+    /**
+     * Mostra o formulário vazio para a criação
+     */
     public function create(Type $var = null)
     {
         return view('servicos.create');
     }
 
-    public function store(Request $request)
+    /**
+     * Salva o serviço no banco de dados
+     */
+    public function store(ServicoRequest $request)
     {
         # code...        
         $dados = $request->except('_token');
         $retorno = Servico::create($dados);
 
         if($retorno){
-            return redirect()->route('servicos.index');
+            return redirect()->route('servicos.index')->with('message', 'Serviço criado com sucesso!');
         }
     }
 
+    /**
+     * Mostra o formulário com os dados de um serviço do banco de dados
+     */
     public function edit(int $id)
     {
         $servico = Servico::findOrFail($id);
@@ -38,16 +51,21 @@ class ServicoController extends Controller
         return view('servicos.edit')->with('servico', $servico);
     }
 
-    public function update(int $id, Request $request)
+    /**
+     * Atualiza os dados no banco de dados
+     */
+    public function update(int $id, ServicoRequest $request)
     {
         $dados = $request->except(['_token', '_method']);
         $servico = Servico::findOrFail($id);
 
         $servico->update($dados);
 
-        return redirect()->route('servicos.index');
+        return redirect()->route('servicos.index')->with('message', 'Serviço atualizado com sucesso!');
     }
-
+/**
+ * Deleta o serviço do banco de dados
+ */
     public function delete(int $id)
     {
         $servico = Servico::findOrFail($id);
