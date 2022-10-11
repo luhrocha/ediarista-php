@@ -7,12 +7,7 @@
 @stop
 
 @section('content')
-
-    @if (session('message'))
-        <div class="alert alert-success">
-            {{ session('message') }}
-        </div>
-    @endif
+@include('_message_session')
     
 <table class="table table-striped table-hover">
     <thead>
@@ -29,8 +24,14 @@
                 <th>{{ $servico->id }}</th>
                 <td>{{ $servico->nome }}</td>
                 <td>
-                    <a href="{{route('servicos.edit', $servico)}}">Editar</a> |
-                    <a href="">Remover</a>                     
+                    <a href="{{route('servicos.edit', $servico)}}" class="btn btn-primary">Editar</a>
+
+                    <form action="{{ route('servicos.delete', $servico) }}" method="post" style="display:inline">
+                        @method('DELETE')
+                        @csrf
+
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Deseja mesmo remover esse serviço?')">Remover</button>
+                    </form>                   
                 </td>
             </tr>  
         @empty

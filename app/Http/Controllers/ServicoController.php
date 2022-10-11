@@ -44,21 +44,17 @@ class ServicoController extends Controller
     /**
      * Mostra o formulário com os dados de um serviço do banco de dados
      */
-    public function edit(int $id)
+    public function edit(Servico $servico)
     {
-        $servico = Servico::findOrFail($id);
-
         return view('servicos.edit')->with('servico', $servico);
     }
 
     /**
      * Atualiza os dados no banco de dados
      */
-    public function update(int $id, ServicoRequest $request)
+    public function update(Servico $servico, ServicoRequest $request)
     {
         $dados = $request->except(['_token', '_method']);
-        $servico = Servico::findOrFail($id);
-
         $servico->update($dados);
 
         return redirect()->route('servicos.index')->with('message', 'Serviço atualizado com sucesso!');
@@ -66,12 +62,9 @@ class ServicoController extends Controller
 /**
  * Deleta o serviço do banco de dados
  */
-    public function delete(int $id)
+    public function delete(Servico $servico)
     {
-        $servico = Servico::findOrFail($id);
-
         $servico->delete();
-
-        return redirect()->route('servicos.index');
+        return redirect()->route('servicos.index')->with('message', 'Serviço removido com sucesso!');
     }
 }
