@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ServicoController;
+use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\Auth\LoginController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,22 +16,22 @@ use App\Http\Controllers\ServicoController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [LoginController::class, 'showLoginForm']);
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::middleware('auth')->group(function (){
+    
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-//Rotas para trabalhar  com Serviços
-Route::get('/servicos', [ServicoController::class, 'index'])->name('servicos.index');
-Route::get('/servicos/create', [ServicoController::class, 'create'])->name('servicos.create');
+    //Rotas para trabalhar  com Serviços
+    Route::get('/servicos', [ServicoController::class, 'index'])->name('servicos.index');
+    Route::get('/servicos/create', [ServicoController::class, 'create'])->name('servicos.create');
+    Route::post('/servicos', [ServicoController::class, 'store'])->name('servicos.store');
+    Route::get('/servicos/{servico}/edit', [ServicoController::class, 'edit'])->name('servicos.edit');
+    Route::put('/servicos/{servico}', [ServicoController:: class, 'update'])->name('servicos.update');
+    Route::delete('/servicos/{servico}/delete', [ServicoController:: class, 'delete'])->name('servicos.delete');
 
-Route::post('/servicos', [ServicoController::class, 'store'])->name('servicos.store');
-
-Route::get('/servicos/{servico}/edit', [ServicoController::class, 'edit'])->name('servicos.edit');
-
-Route::put('/servicos/{servico}', [ServicoController:: class, 'update'])->name('servicos.update');
-
-Route::delete('/servicos/{servico}/delete', [ServicoController:: class, 'delete'])->name('servicos.delete');
+    //Rotas para trabalhar com Usuários
+    Route::resource('usuarios', UsuarioController::class);
+});
